@@ -12,6 +12,5 @@ codeunit 50100 "Video Jnl. Post Line"
         
     begin
         Codeunit.Run(Codeunit::"Video Jnl. Check Line", VideoJnlLine);
-        Message('Journal lines have passed the checks.');
     end;
 }

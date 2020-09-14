@@ -22,7 +22,11 @@ table 50101 "Video Call Batch"
     procedure Post()
     var
         VideoCallBatchPost: Codeunit "Video Call Post Batch";
+        ErrorMessageMgt: Codeunit "Error Message Management";
+        ErrorMessageHandler: Codeunit "Error Message Handler";
     begin
-        VideoCallBatchPost.Run(Rec);
+        ErrorMessageMgt.Activate(ErrorMessageHandler);
+        if not VideoCallBatchPost.Run(Rec) then
+            ErrorMessageHandler.ShowErrors();
     end;
 }
