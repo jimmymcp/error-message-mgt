@@ -4,23 +4,30 @@ codeunit 50102 "Video Call Post Batch"
 
     trigger OnRun()
     begin
+        CheckLines(Rec);
         PostBatch(Rec);
     end;
 
     local procedure PostBatch(VideoCallBatch: Record "Video Call Batch")
     var
         VideoJnlLine: Record "Video Journal Line";
-        ErrorMessageMgt: Codeunit "Error Message Management";
-        ErrorContextElement: Codeunit "Error Context Element";
     begin
-        ErrorMessageMgt.PushContext(ErrorContextElement, VideoCallBatch, 0, '');
-
         VideoJnlLine.SetRange("Batch Name", VideoCallBatch.Name);
         VideoJnlLine.FindSet();
         repeat
             VideoJnlLine.Post();
         until VideoJnlLine.Next() = 0;
+    end;
 
-        ErrorMessageMgt.Finish(VideoCallBatch);
+    [ErrorBehavior(ErrorBehavior::Collect)]
+    local procedure CheckLines(VideoCallBatch: Record "Video Call Batch")
+    var
+        VideoJnlLine: Record "Video Journal Line";
+    begin
+        VideoJnlLine.SetRange("Batch Name", VideoCallBatch.Name);
+        VideoJnlLine.FindSet();
+        repeat
+            Codeunit.Run(Codeunit::"Video Jnl. Check Line", VideoJnlLine);
+        until VideoJnlLine.Next() = 0;
     end;
 }
