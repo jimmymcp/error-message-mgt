@@ -19,23 +19,23 @@ page 50100 "Video Call Journal"
             }
             repeater(General)
             {
-                field("Video Platform"; "Video Platform")
+                field("Video Platform"; Rec."Video Platform")
                 {
                     ApplicationArea = All;
                 }
-                field("Posting Date"; "Posting Date")
+                field("Posting Date"; Rec."Posting Date")
                 {
                     ApplicationArea = All;
                 }
-                field("Call Type"; "Call Type")
+                field("Call Type"; Rec."Call Type")
                 {
                     ApplicationArea = All;
                 }
-                field("No. of Participants"; "No. of Participants")
+                field("No. of Participants"; Rec."No. of Participants")
                 {
                     ApplicationArea = All;
                 }
-                field("Duration (mins)"; "Duration (mins)")
+                field("Duration (mins)"; Rec."Duration (mins)")
                 {
                     ApplicationArea = All;
                 }
@@ -93,6 +93,6 @@ page 50100 "Video Call Journal"
 
     trigger OnNewRecord(BelowxRec: Boolean)
     begin
-        "Batch Name" := BatchName;
+        Rec."Batch Name" := BatchName;
     end;
 }
