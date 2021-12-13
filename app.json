@@ -33,6 +33,10 @@
     }
   ],
   "contextSensitiveHelpUrl": "https://jpearson.blog",
-  "showMyCode": true,
-  "runtime": "5.0"
+  "resourceExposurePolicy": {
+    "allowDebugging": true,
+    "allowDownloadingSource": true,
+    "includeSourceInSymbolFile": true
+  },
+  "runtime": "8.1"
 }
