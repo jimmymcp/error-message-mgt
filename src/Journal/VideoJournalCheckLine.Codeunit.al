@@ -12,7 +12,7 @@ codeunit 50101 "Video Jnl. Check Line"
         GLSetup: Record "General Ledger Setup";
     begin
         if VideoJnlLine."No. of Participants" = 0 then
-            VideoJnlLine.TestField("No. of Participants", ErrorInfo.Create('', true, VideoJnlLine, VideoJnlLine.FieldNo("No. of Participants"));
+            VideoJnlLine.TestField("No. of Participants", ErrorInfo.Create('', true, VideoJnlLine, VideoJnlLine.FieldNo("No. of Participants")));
 
         if VideoJnlLine."Duration (mins)" = 0 then
             VideoJnlLine.TestField("Duration (mins)", ErrorInfo.Create('', true, VideoJnlLine, VideoJnlLine.FieldNo("Duration (mins)")));
