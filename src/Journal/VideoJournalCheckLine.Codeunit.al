@@ -10,49 +10,48 @@ codeunit 50101 "Video Jnl. Check Line"
     local procedure Check(var VideoJnlLine: Record "Video Journal Line")
     var
         GLSetup: Record "General Ledger Setup";
-        ErrorMessageMgt: Codeunit "Error Message Management";
     begin
         if VideoJnlLine."No. of Participants" = 0 then
-            ErrorMessageMgt.LogErrorMessage(VideoJnlLine.FieldNo("No. of Participants"), StrSubstNo('%1 must not be 0', VideoJnlLine.FieldCaption("No. of Participants")), VideoJnlLine, VideoJnlLine.FieldNo("No. of Participants"), '');
+            VideoJnlLine.TestField("No. of Participants", ErrorInfo.Create('', true, VideoJnlLine, VideoJnlLine.FieldNo("No. of Participants")));
 
         if VideoJnlLine."Duration (mins)" = 0 then
-            ErrorMessageMgt.LogErrorMessage(VideoJnlLine.FieldNo("Duration (mins)"), StrSubstNo('%1 must not be 0', VideoJnlLine.FieldCaption("Duration (mins)")), VideoJnlLine, VideoJnlLine.FieldNo("Duration (mins)"), '');
+            VideoJnlLine.TestField("Duration (mins)", ErrorInfo.Create('', true, VideoJnlLine, VideoJnlLine.FieldNo("Duration (mins)")));
 
         if VideoJnlLine."Posting Date" = 0D then
-            ErrorMessageMgt.LogErrorMessage(VideoJnlLine.FieldNo("Posting Date"), StrSubstNo('%1 must be set', VideoJnlLine.FieldCaption("Posting Date")), VideoJnlLine, VideoJnlLine.FieldNo("Posting Date"), '');
+            VideoJnlLine.TestField("Posting Date", ErrorInfo.Create('', true, VideoJnlLine, VideoJnlLine.FieldNo("Posting Date")));
 
         GLSetup.CheckAllowedPostingDates(0);
 
         case VideoJnlLine."Video Platform" of
             "Video Platform"::Zoom:
                 if (VideoJnlLine."Duration (mins)" > 40) and (VideoJnlLine."No. of Participants" > 2) then
-                    ErrorMessageMgt.LogError(VideoJnlLine, 'Zoom calls cannot be over 40 minutes. You haven''t paid for it, remember?', '');
+                    Error(ErrorInfo.Create('Zoom calls cannot be over 40 minutes. You haven''t paid for it, remember?', true, VideoJnlLine));
             "Video Platform"::Teams:
                 if VideoJnlLine."Call Type" = VideoJnlLine."Call Type"::"Family Quiz" then
-                    ErrorMessageMgt.LogError(VideoJnlLine, 'A family quiz on Teams? Sounds too corporate for my liking', '');
+                    Error(ErrorInfo.Create('A family quiz on Teams? Sounds too corporate for my liking', true, VideoJnlLine));
             "Video Platform"::WhatsApp:
                 begin
                     if VideoJnlLine."No. of Participants" > 4 then
-                        ErrorMessageMgt.LogError(VideoJnlLine, 'Do yourself a favour and don''t WhatsApp for group chats with more than 4 people.', '');
+                        Error(ErrorInfo.Create('Do yourself a favour and don''t WhatsApp for group chats with more than 4 people.', true, VideoJnlLine));
 
                     if VideoJnlLine."Call Type" = "Video Call Type"::"Customer Demo" then
-                        ErrorMessageMgt.LogError(VideoJnlLine, 'I know you didn''t do a customer demo on WhatsApp. That would be crazy', '');
+                        Error(ErrorInfo.Create('I know you didn''t do a customer demo on WhatsApp. That would be crazy', true, VideoJnlLine));
                 end;
             "Video Platform"::Skype:
                 if VideoJnlLine."No. of Participants" > 2 then
-                    ErrorMessageMgt.LogError(VideoJnlLine, 'Don''t tell me you found more than 2 friends who still use Skype?!', '');
+                    Error(ErrorInfo.Create('Don''t tell me you found more than 2 friends who still use Skype?!', true, VideoJnlLine));
         end;
 
         if VideoJnlLine."Call Type" = "Video Call Type"::"Family Quiz" then
             if Date2DWY(VideoJnlLine."Posting Date", 1) in [1 .. 4] then
-                ErrorMessageMgt.LogError(VideoJnlLine, 'Surely family quizzes are a weekend pastime?', '');
+                Error(ErrorInfo.Create('Surely family quizzes are a weekend pastime?', true, VideoJnlLine));
 
         if VideoJnlLine."Call Type" = "Video Call Type"::"Daily Team Call" then begin
             if VideoJnlLine."Duration (mins)" > 45 then
-                ErrorMessageMgt.LogError(VideoJnlLine, 'Your daily call with the team was over 45 minutes long? No way.', '');
+                Error(ErrorInfo.Create('Your daily call with the team was over 45 minutes long? No way.', true, VideoJnlLine));
 
             if VideoJnlLine."No. of Participants" > 30 then
-                ErrorMessageMgt.LogError(VideoJnlLine, 'You need to find a smaller team to hang out with at the start of the day.', '');
+                Error(ErrorInfo.Create('You need to find a smaller team to hang out with at the start of the day.', true, VideoJnlLine));
         end;
     end;
 }
